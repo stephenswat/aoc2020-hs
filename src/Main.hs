@@ -11,14 +11,15 @@ main :: IO ()
 main = do {
     args <- getArgs;
     let
-        dayn = read (args !! 0) :: Integer
-        sols = solutions !! dayn
+        dayn = read (args !! 0) :: Int
+        sols = solutions !! (dayn - 1)
         fnam = args !! 1
     in do {
-        file <- readFile (head args);
+        putStrLn ("Solutions for day " ++ show dayn);
+        file <- readFile fnam;
         let (solA, solB) = sols in do {
-            putStrLn . ("Problem 1: " ++) . solA $ file;
-            putStrLn . ("Problem 2: " ++) . solB $ file;
+            putStrLn . ("Problem A: " ++) . solA $ file;
+            putStrLn . ("Problem B: " ++) . solB $ file;
         }
     }
 }
