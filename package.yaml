@@ -1,0 +1,14 @@
+name:                aoc2020
+version:             1.1.0.0
+github:              "StephenSwat/aoc2020-hs"
+license:             Unlicense
+author:              "Stephen Nicholas Swatman"
+maintainer:          "stephen@v25.nl"
+
+dependencies:
+- base >= 4.7 && < 5
+
+executables:
+  aoc2020:
+    main:                Main.hs
+    source-dirs:         src
