@@ -1,4 +1,4 @@
-module Day01 (solution) where
+module Problems.Day01 (solution) where
 
 import Common
 
