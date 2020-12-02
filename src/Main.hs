@@ -3,9 +3,10 @@ import System.Environment
 import Common
 
 import qualified Problems.Day01
+import qualified Problems.Day02
 
 solutions :: [Day]
-solutions = [Problems.Day01.solution]
+solutions = [Problems.Day01.solution, Problems.Day02.solution]
 
 main :: IO ()
 main = do {
