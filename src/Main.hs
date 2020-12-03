@@ -1,6 +1,6 @@
 import System.Environment
 
-import Common
+import Common.Solution (Day)
 
 import qualified Problems.Day01
 import qualified Problems.Day02

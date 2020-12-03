@@ -3,7 +3,8 @@ module Problems.Day03 (solution) where
 import Data.Set (Set, fromList, member)
 import Data.Bifunctor
 
-import Common (Day, World, StdTiles(Wall), parseWorld, height, width, getTile, toStdTile)
+import Common.Solution (Day)
+import Common.World (World, StdTiles(Wall), parseWorld, height, width, getTile, toStdTile)
 
 countTrees :: (Int, Int) -> World StdTiles -> Int
 countTrees (dx, dy) m

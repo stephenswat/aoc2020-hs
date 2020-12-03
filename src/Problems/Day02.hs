@@ -2,7 +2,7 @@ module Problems.Day02 (solution) where
 
 import Text.Regex.PCRE
 
-import Common
+import Common.Solution (Day)
 
 type PwdReq = (Int, Int, Char, String)
 

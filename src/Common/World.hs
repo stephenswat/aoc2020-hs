@@ -1,11 +1,7 @@
-module Common where
+module Common.World where
 
 import Data.Map (Map, fromList, member, lookup)
 import Data.Maybe (fromJust, isJust)
-
-type Solution = String -> String
-
-type Day = (Solution, Solution)
 
 data World t = World {
     tiles :: Map (Int, Int) t,
@@ -36,6 +32,3 @@ toStdTile _   = Nothing
 
 getTile :: World t -> (Int, Int) -> Maybe t
 getTile w c = Data.Map.lookup c (tiles w)
-
-parseNumbers :: String -> [Integer]
-parseNumbers = map read . lines

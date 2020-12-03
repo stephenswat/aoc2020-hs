@@ -1,6 +1,7 @@
 module Problems.Day01 (solution) where
 
-import Common
+import Common.Solution (Day)
+import Common.Parse (parseNumbers)
 
 problemA :: [Integer] -> Integer
 problemA i = head [a * b | a <- i, b <- i, a + b == 2020]
