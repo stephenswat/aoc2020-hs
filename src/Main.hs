@@ -4,9 +4,10 @@ import Common
 
 import qualified Problems.Day01
 import qualified Problems.Day02
+import qualified Problems.Day03
 
 solutions :: [Day]
-solutions = [Problems.Day01.solution, Problems.Day02.solution]
+solutions = [Problems.Day01.solution, Problems.Day02.solution, Problems.Day03.solution]
 
 main :: IO ()
 main = do {
