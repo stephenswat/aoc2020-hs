@@ -3,34 +3,19 @@ module Problems.Day03 (solution) where
 import Data.Set (Set, fromList, member)
 import Data.Bifunctor
 
-import Common
+import Common (Day, World, StdTiles(Wall), parseWorld, height, width, getTile, toStdTile)
 
-data World = World {
-    trees :: Set (Int, Int),
-    height :: Int,
-    width :: Int
-}
-
-parseWorld :: String -> World
-parseWorld i = World { trees=fromList trees, height=h, width=w }
-    where
-        rows = lines i
-        h = length rows
-        w = length . head $ rows
-        trees = [(x, y) | x <- [0..w-1], y <- [0..h-1], (rows !! y) !! x == '#']
-
-countTrees :: (Int, Int) -> World -> Int
+countTrees :: (Int, Int) -> World StdTiles -> Int
 countTrees (dx, dy) m
     = length
-    . filter (isTree m)
+    . filter ((== Just Wall) . getTile m . first (`mod` width m))
     . takeWhile ((<= height m) . snd)
     . iterate (bimap (+ dx) (+ dy))
     $ (0, 0)
-    where isTree m (x, y) = member (x `mod` width m, y) $ trees m
 
 solution :: Day
 solution =
-    ( show . countTrees (3, 1) . parseWorld
-    , show . product . (\m -> [countTrees s m | s <- slopes]) . parseWorld
+    ( show . countTrees (3, 1) . parseWorld toStdTile
+    , show . product . (\m -> [countTrees s m | s <- slopes]) . parseWorld toStdTile
     )
     where slopes = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
