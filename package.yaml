@@ -9,6 +9,7 @@ dependencies:
 - base >= 4.7 && < 5
 - regex-pcre
 - containers == 0.6.2.1
+- split == 0.2.3.4
 
 executables:
   aoc2020:
