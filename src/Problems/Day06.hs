@@ -7,6 +7,6 @@ import Common.Solution (Day)
 
 solution :: Day
 solution =
-    ( show . sum . map (size . unions . map fromList) . splitWhen (== "") . lines
-    , show . sum . map (size . foldl1 intersection . map fromList) . splitWhen (== "") . lines
-    )
+    ( q (size . unions . map fromList)
+    , q (size . foldl1 intersection . map fromList)
+    ) where q f = show . sum . map f . splitWhen null . lines
