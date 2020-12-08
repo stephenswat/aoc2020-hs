@@ -10,6 +10,9 @@ dependencies:
 - regex-pcre
 - containers == 0.6.2.1
 - split == 0.2.3.4
+- lens == 4.18.1
+- relude == 0.7.0.0
+- mtl == 2.2.2
 
 executables:
   aoc2020:
