@@ -1,7 +1,7 @@
 module Problems.Day09 (solution) where
 
-import Data.List (inits, tails, nub)
-import Data.Set (Set, fromList, member)
+import Data.List (tails)
+import Data.Set (fromList, member)
 import Data.Bifunctor (first)
 
 import Common.Solution (Day)

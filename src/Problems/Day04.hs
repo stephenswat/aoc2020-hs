@@ -45,11 +45,12 @@ readFields (_:xs) = readFields xs
 
 readPassports :: String -> [Passport]
 readPassports
-    = map readFields
-    . map (map split . splitOn " " . intercalate " ")
+    = map (readFields . catMaybes . map split' . splitOn " " . intercalate " ")
     . splitWhen (== "")
     . lines
-    where split (a:b:c:':':xs) = ([a, b, c], xs)
+    where
+        split' (a:b:c:':':xs) = Just ([a, b, c], xs)
+        split' _ = Nothing
 
 isValidA :: Passport -> Bool
 isValidA p = and [isJust . x $ p | x <- fields]
@@ -91,16 +92,16 @@ validatepid s = (s =~ "^[0-9]{9}$" :: Bool)
 
 isValidB :: Passport -> Bool
 isValidB Passport {
-    byr=Just byr,
-    iyr=Just iyr,
-    eyr=Just eyr,
-    hgt=Just hgt,
-    hcl=Just hcl,
-    ecl=Just ecl,
-    pid=Just pid,
+    byr=Just byr',
+    iyr=Just iyr',
+    eyr=Just eyr',
+    hgt=Just hgt',
+    hcl=Just hcl',
+    ecl=Just ecl',
+    pid=Just pid',
     cid=_
-} = validatebyr byr && validateiyr iyr && validateeyr eyr && validatehgt hgt &&
-    validatehcl hcl && validateecl ecl && validatepid pid
+} = validatebyr byr' && validateiyr iyr' && validateeyr eyr' && validatehgt hgt' &&
+    validatehcl hcl' && validateecl ecl' && validatepid pid'
 isValidB _ = False
 
 solution :: Day

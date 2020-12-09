@@ -1,6 +1,6 @@
 module Common.World where
 
-import Data.Map (Map, fromList, member, lookup)
+import Data.Map (Map, fromList, lookup)
 import Data.Maybe (fromJust, isJust)
 
 data World t = World {
@@ -14,13 +14,12 @@ data StdTiles
     deriving (Eq)
 
 parseWorld :: (Char -> Maybe t) -> String -> World t
-parseWorld f i = World { tiles=fromList tiles, height=h, width=w }
+parseWorld f i = World { tiles=fromList t, height=h, width=w }
     where
         rows = lines i
         h = length rows
         w = length . head $ rows
-        tiles =
-            [((x, y), fromJust r)
+        t = [((x, y), fromJust r)
             | x <- [0..w-1]
             , y <- [0..h-1]
             , let r = f . (!! x) . (!! y) $ rows

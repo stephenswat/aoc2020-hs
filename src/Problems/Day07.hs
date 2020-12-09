@@ -17,6 +17,7 @@ parseBag s = (o, catMaybes . map (parseInnerBag . splitOn " ") . splitOn ", " $ 
         parseInnerBag (n:a:c:_)
             | n == "no" = Nothing
             | otherwise = Just (read n, a ++ " " ++ c)
+        parseInnerBag _ = Nothing
 
 canContain :: Colour -> BagContents -> Colour -> Bool
 canContain n h c

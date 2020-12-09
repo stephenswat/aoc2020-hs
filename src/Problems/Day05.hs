@@ -7,9 +7,9 @@ import Data.Maybe (listToMaybe)
 import Common.Solution (Day)
 
 readBin :: Char -> Char -> String -> Integer
-readBin z o
+readBin _ o
     = sum
-    . map (\(n, d) -> if d == o then 2^n else 0)
+    . map (\(n, d) -> if d == o then 2^(n :: Integer) else 0)
     . zip [0..]
     . reverse
 

@@ -11,7 +11,7 @@ data Operation
 instance Show Operation where
     show (Acc v) = "acc " ++ show v
     show (Jmp v) = "jmp " ++ show v
-    show (Nop v) = "nop"
+    show (Nop _) = "nop"
 
 type Program = [Operation]
 
@@ -41,7 +41,7 @@ stepExecution :: ExecutionState -> ExecutionState
 stepExecution s = case op of
     Just (Acc v) -> s { pc = 1 + pc s, acc = v + acc s }
     Just (Jmp v) -> s { pc = v + pc s }
-    Just (Nop v) -> s { pc = 1 + pc s }
+    Just (Nop _) -> s { pc = 1 + pc s }
     Nothing      -> s
     where op = (!!? (pc s)) . program $ s
 

@@ -1,6 +1,5 @@
 module Problems.Day03 (solution) where
 
-import Data.Set (Set, fromList, member)
 import Data.Bifunctor
 
 import Common.Solution (Day)
