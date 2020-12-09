@@ -3,6 +3,7 @@ module Problems.Day09 (solution) where
 import Data.List (tails)
 import Data.Set (fromList, member)
 import Data.Bifunctor (first)
+import Data.Tuple.Extra ((&&&))
 
 import Common.Solution (Day)
 import Common.Parse (parseNumbers)
@@ -18,26 +19,23 @@ solveA
     = snd
     . head
     . filter (not . (uncurry . flip $ member))
-    . map (first doubletSums . initLast)
+    . map (first doubletSums . (init &&& last))
     . filter ((== 26) . length)
     . map (take 26)
     . tails
-    where
-        doubletSums xs = fromList [x + y | x <- xs, y <- xs, x /= y]
-        initLast xs = (init xs, last xs)
+    where doubletSums xs = fromList [x + y | x <- xs, y <- xs, x /= y]
 
 solveB :: [Integer] -> Integer
 solveB x
-    = sumMinMax
+    = uncurry (+)
+    . (minimum &&& maximum)
     . head
     . filter ((> 1) . length)
     . filter ((== t) . sum)
     . map (sublist t)
     . tails
     $ x
-    where
-        t = solveA x
-        sumMinMax xs = minimum xs + maximum xs
+    where t = solveA x
 
 solution :: Day
 solution =
