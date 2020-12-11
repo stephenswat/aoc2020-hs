@@ -1,5 +1,6 @@
 module Common.World where
 
+import Data.List (intercalate)
 import Data.Map (Map, fromList, lookup)
 import Data.Maybe (fromJust, isJust)
 
@@ -7,7 +8,7 @@ data World t = World {
     tiles :: Map (Int, Int) t,
     height :: Int,
     width :: Int
-}
+} deriving (Eq)
 
 class Tile a where
     readTile :: Char -> Maybe a
@@ -34,6 +35,10 @@ parseWorld i = World { tiles=fromList t, height=h, width=w }
             , y <- [0..h-1]
             , let r = readTile . (!! x) . (!! y) $ rows
             , isJust r]
+
+showWorld :: Tile t => World t -> String
+showWorld m@World { height=h, width=w }
+    = intercalate "\n" [[maybe '.' showTile . getTile m $ (x, y) | x <- [0..w-1]] | y <- [0..h-1]]
 
 getTile :: World t -> (Int, Int) -> Maybe t
 getTile w c = Data.Map.lookup c (tiles w)
