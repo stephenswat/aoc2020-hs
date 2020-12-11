@@ -9,12 +9,22 @@ data World t = World {
     width :: Int
 }
 
-data StdTiles
+class Tile a where
+    readTile :: Char -> Maybe a
+    showTile :: a -> Char
+
+data StdTile
     = Wall
     deriving (Eq)
 
-parseWorld :: (Char -> Maybe t) -> String -> World t
-parseWorld f i = World { tiles=fromList t, height=h, width=w }
+instance Tile StdTile where
+    readTile '#' = Just Wall
+    readTile _   = Nothing
+
+    showTile Wall = '#'
+
+parseWorld :: Tile t => String -> World t
+parseWorld i = World { tiles=fromList t, height=h, width=w }
     where
         rows = lines i
         h = length rows
@@ -22,12 +32,8 @@ parseWorld f i = World { tiles=fromList t, height=h, width=w }
         t = [((x, y), fromJust r)
             | x <- [0..w-1]
             , y <- [0..h-1]
-            , let r = f . (!! x) . (!! y) $ rows
+            , let r = readTile . (!! x) . (!! y) $ rows
             , isJust r]
-
-toStdTile :: Char -> Maybe StdTiles
-toStdTile '#' = Just Wall
-toStdTile _   = Nothing
 
 getTile :: World t -> (Int, Int) -> Maybe t
 getTile w c = Data.Map.lookup c (tiles w)
