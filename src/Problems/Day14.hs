@@ -25,8 +25,8 @@ data Memory = Memory {
     msk :: [MaskBit]
 }
 
-parseOperation :: String -> Operation
-parseOperation i
+parseOp :: String -> Operation
+parseOp i
     | s == "mask" = parseMsk xs
     | s == "mem"  = parseMem xs
     | otherwise = error "Not a mask or a mem!"
@@ -56,21 +56,21 @@ memMask m i = go m i 0 where
     go []        j _ = [j]
     go (Set  :x) j d = go x (setBit j d) (d + 1)
     go (Unset:x) j d = go x (const j d) (d + 1)
-    go (Float:x) j d = (go x (setBit j d) (d + 1)) ++ (go x (clearBit j d) (d + 1))
+    go (Float:x) j d = go x (setBit j d) (d + 1) ++ go x (clearBit j d) (d + 1)
 
 initMemory :: Memory
 initMemory = Memory{mem=empty, msk=[]}
 
 applyOpA :: Memory -> Operation -> Memory
-applyOpA m (Store p v) = m{mem=insert p ((foldMask $ msk m) $ v) (mem m)}
-applyOpA m (Mask n) = m{msk=n}
+applyOpA m (Store p v) = m{mem=insert p (foldMask (msk m) v) (mem m)}
+applyOpA m (Mask n)    = m{msk=n}
 
 applyOpB :: Memory -> Operation -> Memory
 applyOpB m (Store p v) = m{mem=foldl (\m' p' -> insert p' v m') (mem m) . memMask (msk m) $ p}
-applyOpB m (Mask n) = m{msk=n}
+applyOpB m (Mask n)    = m{msk=n}
 
 solution :: Day
 solution =
-    ( q applyOpA
-    , q applyOpB
-    ) where q f = show . sum . elems . mem . foldl f initMemory . map parseOperation . lines
+    ( show . sum . elems . mem . foldl applyOpA initMemory . map parseOp . lines
+    , show . sum . elems . mem . foldl applyOpB initMemory . map parseOp . lines
+    )
