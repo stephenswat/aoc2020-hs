@@ -23,4 +23,4 @@ executables:
     ghc-options:
       - -Wall
       - -Wcompat
-      - -O2
+      - -O3
