@@ -36,20 +36,18 @@ neighbours r w
     . visible r
 
 transitionA :: TransFun
-transitionA Empty n
-    | (== 0) . length . Prelude.filter (== Occupied) $ n = Occupied
-    | otherwise = Empty
-transitionA Occupied n
-    | (>= 4) . length . Prelude.filter (== Occupied) $ n = Empty
-    | otherwise = Occupied
+transitionA c b
+    | c == Empty && n == 0    = Occupied
+    | c == Occupied && n <= 3 = Occupied
+    | otherwise               = Empty
+    where n = length . Prelude.filter (== Occupied) $ b
 
 transitionB :: TransFun
-transitionB Empty n
-    | (== 0) . length . Prelude.filter (== Occupied) $ n = Occupied
-    | otherwise = Empty
-transitionB Occupied n
-    | (>= 5) . length . Prelude.filter (== Occupied) $ n = Empty
-    | otherwise = Occupied
+transitionB c b
+    | c == Empty && n == 0    = Occupied
+    | c == Occupied && n <= 4 = Occupied
+    | otherwise               = Empty
+    where n = length . Prelude.filter (== Occupied) $ b
 
 stepWorld :: TransFun -> Int -> World PlaneTile -> World PlaneTile
 stepWorld trans r w@World{tiles=t} = w{tiles=mapWithKey f t}
