@@ -1,5 +1,7 @@
 module Problems.Day17 (solution) where
 
+import Data.Maybe (fromJust)
+import Data.Bifunctor (second)
 import Data.Set (Set, fromList, toList, filter)
 import Data.Map (Map, mapKeys, keys, lookup, size, filter, fromList)
 import Relude.Extra.Tuple (toSnd)
@@ -9,19 +11,21 @@ import Common.World
 
 data Cell
     = Live
-    | Dead
     deriving (Eq)
 
 type Coordinate = (Int, Int, Int, Int)
 
 type Automaton = Map Coordinate Cell
 
+
+
+-- instance Show Automaton where
+--     show _ = " Butt "
+
 instance Tile Cell where
-    readTile '.' = Just Dead
     readTile '#' = Just Live
     readTile _   = Nothing
 
-    showTile Dead = '.'
     showTile Live = '#'
 
 toAutomaton :: World Cell -> Automaton
@@ -34,11 +38,11 @@ neighbours p = map (add p) nbs
         nbs = [(x, y, z, w) | x <- dir, y <- dir, z <- dir, w <- dir]
         dir = [-1, 0, 1]
 
-trans :: Automaton -> Coordinate -> Cell
+trans :: Automaton -> Coordinate -> Maybe Cell
 trans t p
-    | l p == Just Live && n >= 2 && n <= 3 = Live
-    | n == 3                               = Live
-    | otherwise                            = Dead
+    | l p == Just Live && n >= 2 && n <= 3 = Just Live
+    | n == 3                               = Just Live
+    | otherwise                            = Nothing
     where
         l = flip (Data.Map.lookup) t
         n = length . Prelude.filter (== Just Live) . map l . Prelude.filter (/= p) . neighbours $ p
@@ -46,7 +50,8 @@ trans t p
 stepAutomaton :: (Set Coordinate -> Set Coordinate) -> Automaton -> Automaton
 stepAutomaton f a
     = Data.Map.fromList
-    . Prelude.filter ((== Live) . snd)
+    . map (second fromJust)
+    . Prelude.filter ((== Just Live) . snd)
     . map (toSnd (trans a))
     . Data.Set.toList
     . f
