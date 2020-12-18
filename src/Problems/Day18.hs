@@ -8,12 +8,12 @@ import Common.Solution (Day)
 data Token = Number Integer | Add | Mul | OpenPar | ClosePar
 
 lexChar :: Char -> Maybe Token
-lexChar '+' = Just (Add)
-lexChar '*' = Just (Mul)
-lexChar '(' = Just (OpenPar)
-lexChar ')' = Just (ClosePar)
+lexChar '+' = Just Add
+lexChar '*' = Just Mul
+lexChar '(' = Just OpenPar
+lexChar ')' = Just ClosePar
 lexChar n
-    | isDigit n = Just (Number (read [n]))
+    | isDigit n = Just . Number . read $ [n]
     | otherwise = Nothing
 
 flattenAdd :: [Token] -> [Token]
@@ -30,7 +30,7 @@ flattenLtR _                = error "Invalid flatten"
 calc :: ([Token] -> Integer) -> [Token] -> Integer
 calc f t = case reduce [] t of
     ([Number r], []) -> r
-    _                 -> error "Error in reduction"
+    _                -> error "Error in reduction"
     where
         reduce s []           = ([Number (f s)], [])
         reduce s (OpenPar:r)  = let (q, u) = reduce [] r in reduce (q ++ s) u
