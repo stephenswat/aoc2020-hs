@@ -15,6 +15,7 @@ dependencies:
   - mtl == 2.2.2
   - extra == 1.7.8
   - arithmoi == 0.10.0.0
+  - parsec == 3.1.14.0
 
 executables:
   aoc2020:
