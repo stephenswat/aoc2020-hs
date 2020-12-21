@@ -17,11 +17,6 @@ type Coordinate = (Int, Int, Int, Int)
 
 type Automaton = Map Coordinate Cell
 
-
-
--- instance Show Automaton where
---     show _ = " Butt "
-
 instance Tile Cell where
     readTile '#' = Just Live
     readTile _   = Nothing
