@@ -5,7 +5,7 @@ import Text.Parsec.Char (letter, char, string)
 import Text.Parsec.Combinator (endBy1, sepBy1, many1)
 import Text.Parsec.String (Parser)
 import Data.Either (rights)
-import Data.Map (Map, fromList, adjust, elems, toList)
+import Data.Map (Map, fromList, adjust, elems)
 import Data.Set (Set, fromList, unions, toList, intersection, difference, member)
 import Data.List (intercalate)
 import Data.Maybe (fromJust)
@@ -21,7 +21,7 @@ parseLine = do
     return (Data.Set.fromList foods, Data.Set.fromList allergens)
 
 initMap :: [(Set String, Set String)] -> Map String (Set String)
-initMap i = Data.Map.fromList [(x, allFood) | x <- Data.Set.toList allAllergens]
+initMap i = Data.Map.fromList [(x, allFood) | x <- toList allAllergens]
     where
         allFood = unions . map fst $ i
         allAllergens = unions . map snd $ i
@@ -34,7 +34,7 @@ solveA i = length . filter ((flip member) noncandidates) $ allFoodList
     where
         candidates = unions . elems . foldl f (initMap i) $ i
         noncandidates = difference (unions . map fst $ i) candidates
-        allFoodList = concat . map Data.Set.toList . map fst $ i
+        allFoodList = concat . map toList . map fst $ i
 
 solveB :: [(Set String, Set String)] -> String
 solveB i = intercalate "," . elems . fromJust . optionSolver $ (foldl f (initMap i) i)

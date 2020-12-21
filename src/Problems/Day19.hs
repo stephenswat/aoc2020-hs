@@ -4,7 +4,6 @@ module Problems.Day19 (solution) where
 
 import Text.Read (readMaybe)
 import Control.Applicative ((<|>))
-import Control.Monad.Zip (mzip)
 import Control.Monad (forM)
 import Data.Tuple.Extra (both)
 import Data.Bifunctor (first)
