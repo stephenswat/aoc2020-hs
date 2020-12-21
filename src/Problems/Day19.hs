@@ -33,7 +33,7 @@ readExpr n j = pAlt n j <|> pRec n j <|> pSeq n j <|> pRef n j <|> pCon n j
                 z ('_':o) = Just o
                 z _ = Nothing
         pAlt m i = case splitOn " | " i of
-            [l, r] -> mzip (readExpr m l) (readExpr m r) <&> uncurry Alt
+            l@(_:_:_) -> forM l (readExpr m) <&> foldl1 Alt
             _ -> Nothing
         pSeq m i = case splitOn " " i of
             l@(_:_:_) -> forM l (readExpr m) <&> foldl1 Seq
