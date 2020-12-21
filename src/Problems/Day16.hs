@@ -1,11 +1,13 @@
 module Problems.Day16 (solution) where
 
 import Data.Bifunctor (second)
+import Data.Set (fromList)
 import Data.Map (Map, fromList, elems, toList)
 import Data.List (transpose, isPrefixOf)
 import Data.List.Split (splitOn)
-import Data.Maybe (isJust, fromJust)
+import Data.Maybe (fromJust)
 
+import Common.Solver (optionSolver)
 import Common.Solution (Day)
 
 type Range = (Integer, Integer)
@@ -20,7 +22,7 @@ data Input = Input
 
 parseInput :: String -> Input
 parseInput s = Input
-    { fields=fromList . map parseField . lines $ f
+    { fields=Data.Map.fromList . map parseField . lines $ f
     , mytick=parseTicket . last . lines $ m
     , nbtick=map parseTicket . tail . lines $ n
     }
@@ -38,19 +40,6 @@ discardInvalid :: Input -> Input
 discardInvalid i = i{nbtick=[t | t <- (nbtick i), and [matchField v allRngs | v <- t]]}
     where allRngs = concat . elems . fields $ i
 
-fieldSolver :: [(Integer, (Maybe String, [String]))] -> Maybe [(Integer, String)]
-fieldSolver i
-    | done      = Just [(j, m) | (j, (Just m, _)) <- i]
-    | i == n    = Nothing
-    | otherwise = fieldSolver n
-    where
-        reduce _ (Nothing, (j:[])) = (Just j, [])
-        reduce f (Nothing, xs    ) = (Nothing, filter ((flip notElem) f) xs)
-        reduce _ j                 = j
-        done = and [isJust . fst . snd $ j | j <- i]
-        finished = concat . filter ((== 1) . length) . map (snd . snd) $ i
-        n = map (second (reduce finished)) $ i
-
 solveA :: Input -> Integer
 solveA i = sum [x | x <- concat . nbtick $ i, not . matchField x $ concat . elems . fields $ i]
 
@@ -59,10 +48,12 @@ solveB i
     = product
     . map (((mytick i) !!) . fromInteger . fst)
     . filter (isPrefixOf "departure" . snd)
+    . toList
     . fromJust
-    . fieldSolver
+    . optionSolver
+    . Data.Map.fromList
+    . map (second (\vs -> Data.Set.fromList [x | (x, y) <- toList . fields $ i, and [matchField v y | v <- vs]]))
     . zip [0..]
-    . map (\vs -> (Nothing, [x | (x, y) <- toList . fields $ i, and [matchField v y | v <- vs]]))
     . transpose
     $ (mytick i):(nbtick i)
 
