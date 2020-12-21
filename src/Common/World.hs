@@ -24,6 +24,9 @@ instance Tile StdTile where
 
     showTile Wall = '#'
 
+instance Tile t => Show (World t) where
+    show = showWorld
+
 parseWorld :: Tile t => String -> World t
 parseWorld i = World { tiles=fromList t, height=h, width=w }
     where
