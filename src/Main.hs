@@ -23,6 +23,7 @@ import qualified Problems.Day18
 import qualified Problems.Day19
 import qualified Problems.Day20
 import qualified Problems.Day21
+import qualified Problems.Day22
 
 solutions :: [Day]
 solutions =
@@ -47,6 +48,7 @@ solutions =
     , Problems.Day19.solution
     , Problems.Day20.solution
     , Problems.Day21.solution
+    , Problems.Day22.solution
     ]
 
 main :: IO ()
