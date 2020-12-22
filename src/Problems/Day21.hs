@@ -9,6 +9,8 @@ import Data.Map (Map, fromList, adjust, elems)
 import Data.Set (Set, fromList, unions, toList, intersection, difference, member)
 import Data.List (intercalate)
 import Data.Maybe (fromJust)
+import Data.Tuple.Extra (both)
+import Control.Arrow ((&&&))
 
 import Common.Solver (optionSolver)
 import Common.Solution (Day)
@@ -21,23 +23,21 @@ parseLine = do
     return (Data.Set.fromList foods, Data.Set.fromList allergens)
 
 initMap :: [(Set String, Set String)] -> Map String (Set String)
-initMap i = Data.Map.fromList [(x, allFood) | x <- toList allAllergens]
-    where
-        allFood = unions . map fst $ i
-        allAllergens = unions . map snd $ i
+initMap i = Data.Map.fromList [(x, allF) | x <- toList allA]
+    where (allF, allA) = both unions . unzip $ i
 
-f :: Map String (Set String) -> (Set String, Set String) -> Map String (Set String)
-f c (q, a) = foldl (\c' a' -> adjust (intersection q) a' c') c a
+presolve :: [(Set String, Set String)] -> Map String (Set String)
+presolve i = foldr f (initMap i) i
+    where
+        f (b, a) c = foldr (adjust (intersection b)) c a
 
 solveA :: [(Set String, Set String)] -> Int
-solveA i = length . filter ((flip member) noncandidates) $ allFoodList
+solveA i = length . filter ((flip member) nc) . concat . map (toList . fst) $ i
     where
-        candidates = unions . elems . foldl f (initMap i) $ i
-        noncandidates = difference (unions . map fst $ i) candidates
-        allFoodList = concat . map toList . map fst $ i
+        nc = uncurry difference . both unions . (map fst &&& elems . presolve) $ i
 
 solveB :: [(Set String, Set String)] -> String
-solveB i = intercalate "," . elems . fromJust . optionSolver $ (foldl f (initMap i) i)
+solveB = intercalate "," . elems . fromJust . optionSolver . presolve
 
 solution :: Day
 solution =
