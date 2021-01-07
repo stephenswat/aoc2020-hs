@@ -29,24 +29,27 @@ data Tile
 
 type Route = [Direction]
 
-type HexCoord = (Int, Int, Int)
+data Hex = Hex Int Int Int deriving (Eq, Ord)
 
-type World = Map HexCoord Tile
+type World = Map Hex Tile
 
-dirToCoord :: Direction -> HexCoord
-dirToCoord East      = ( 1,  0, -1)
-dirToCoord West      = (-1,  0,  1)
-dirToCoord SouthEast = ( 0,  1, -1)
-dirToCoord SouthWest = (-1,  1,  0)
-dirToCoord NorthEast = ( 1, -1,  0)
-dirToCoord NorthWest = ( 0, -1,  1)
+instance Semigroup Hex where
+    (Hex x1 y1 z1) <> (Hex x2 y2 z2) = Hex (x1 + x2) (y1 + y2) (z1 + z2)
+
+instance Monoid Hex where
+    mempty = Hex 0 0 0
+
+dirToCoord :: Direction -> Hex
+dirToCoord East      = Hex  1  0 (-1)
+dirToCoord West      = Hex (-1)  0  1
+dirToCoord SouthEast = Hex  0  1 (-1)
+dirToCoord SouthWest = Hex (-1)  1  0
+dirToCoord NorthEast = Hex  1 (-1)  0
+dirToCoord NorthWest = Hex  0 (-1)  1
 
 flipTile :: Tile -> Tile
 flipTile White = Black
 flipTile Black = White
-
-addHex :: HexCoord -> HexCoord -> HexCoord
-addHex (x1, y1, z1) (x2, y2, z2) = (x1 + x2, y1 + y2, z1 + z2)
 
 parseDirection :: Parser Direction
 parseDirection = (e <|> w <|> s <|> n)
@@ -56,20 +59,17 @@ parseDirection = (e <|> w <|> s <|> n)
         e  = char 'e' >> return East
         w  = char 'w' >> return West
 
-flattenRoute :: Route -> HexCoord
-flattenRoute = foldl (\a n -> addHex a (dirToCoord n)) (0, 0, 0)
-
 parseInput :: String -> [Route]
 parseInput = map (fromRight (error "Bad parse!") . parse (many1 parseDirection) "") . lines
 
-getWorld :: [HexCoord] -> World
+getWorld :: [Hex] -> World
 getWorld = foldl (\a n -> insertWith (\_ o -> flipTile o) n Black a) empty
 
-neighbours :: HexCoord -> [HexCoord]
-neighbours c = map (addHex c . dirToCoord) $ ds
+neighbours :: Hex -> [Hex]
+neighbours c = map ((c <>) . dirToCoord) $ ds
     where ds = [East, West, SouthWest, SouthEast, NorthWest, NorthEast]
 
-trans :: World -> HexCoord -> Maybe Tile
+trans :: World -> Hex -> Maybe Tile
 trans t p
     | c == Black && n == 0 || n > 2 = Nothing
     | c == White && n /= 2          = Nothing
@@ -94,4 +94,4 @@ solution :: Day
 solution =
     ( q id
     , q ((!! 100) . iterate stepFloor)
-    ) where q f = show . size . Data.Map.filter (== Black) . f . getWorld . map flattenRoute . parseInput
+    ) where q f = show . size . Data.Map.filter (== Black) . f . getWorld . map (mconcat . map dirToCoord) . parseInput
