@@ -22,3 +22,19 @@ example, to run the solution for day 1, execute the following command:
 ```bash
 $ stack run 1 input/Day01.txt
 ```
+
+## Reflections
+
+The problems this year seemed significantly easier than the problems of last
+year. I am not sure whether that is just due to me having a better understanding
+of Haskell this year. The only problem that gave me some trouble was day 20,
+which I didn't find the motivation to solve for a while.
+
+It surprised me that there was no set of problems with a common theme like there
+was last year with the Intcode puzzles. There were more automaton puzzles than
+last year, but they didn't seem to form a cohesive thread of problems increasing
+in difficulty.
+
+The only problem I did not solve in Haskell was part B of day 23. I solved that
+in C++, because I needed the performance of a linked list and I wasn't sure how
+to model the data structures necessary in a performant manner.
